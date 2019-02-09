@@ -4,6 +4,8 @@
 
 namespace Host_Components
 {
+	std::ofstream IO_Flow_Base::log_sq_file;
+
 	//unsigned int InputStreamBase::lastId = 0;
 	IO_Flow_Base::IO_Flow_Base(const sim_object_id_type& name, uint16_t flow_id, LHA_type start_lsa_on_device, LHA_type end_lsa_on_device, uint16_t io_queue_id,
 		uint16_t nvme_submission_queue_size, uint16_t nvme_completion_queue_size, 
@@ -109,6 +111,7 @@ namespace Host_Components
 	IO_Flow_Base::~IO_Flow_Base()
 	{
 		log_file.close();
+		log_sq_file.close();
 		for(auto &req : waiting_requests)
 			if (req)
 				delete req;
@@ -130,8 +133,10 @@ namespace Host_Components
 	void IO_Flow_Base::Start_simulation()
 	{
 		next_logging_milestone = logging_period;
-		if (enabled_logging)
+		if (enabled_logging) {
+			if (!log_sq_file.is_open()) log_sq_file.open("sq_count.log", std::ofstream::out);
 			log_file.open(logging_file_path, std::ofstream::out);
+		}
 		log_file << "SimulationTime(us)\t" << "ReponseTime(us)\t" << "EndToEndDelay(us)"<< std::endl;
 		STAT_sum_device_response_time_short_term = 0;
 		STAT_serviced_request_count_short_term = 0;
@@ -235,7 +240,6 @@ namespace Host_Components
 		sim_time_type request_delay = Simulator->Time() - request->Arrival_time;
 		STAT_serviced_request_count++;
 		STAT_serviced_request_count_short_term++;
-
 		STAT_sum_device_response_time += device_response_time;
 		STAT_sum_device_response_time_short_term += device_response_time;
 		STAT_sum_request_delay += request_delay;
@@ -281,8 +285,6 @@ namespace Host_Components
 			STAT_transferred_bytes_write = request->LBA_count * SECTOR_SIZE_IN_BYTE;
 		}
 
-		delete request;
-
 		nvme_queue_pair.Submission_queue_head = cqe->SQ_Head;
 		
 		//MQSim always assumes that the request is processed correctly, so no need to check cqe->SF_P
@@ -307,8 +309,10 @@ namespace Host_Components
 				pcie_root_complex->Write_to_device(nvme_queue_pair.Submission_tail_register_address_on_device, nvme_queue_pair.Submission_queue_tail);//Based on NVMe protocol definition, the updated tail pointer should be informed to the device
 			}
 			else break;
+		log_sq_file << Simulator->Time() << "  " << io_queue_id-1 << "  " << nvme_software_request_queue.size() << "  " << waiting_requests.size() << "  " << int(request->Type) << '\n';
 
 		delete cqe;
+		delete request;
 
 		//Announce simulation progress
 		if (stop_time > 0)
@@ -393,6 +397,7 @@ namespace Host_Components
 				request->Enqueue_time = Simulator->Time();
 				pcie_root_complex->Write_to_device(nvme_queue_pair.Submission_tail_register_address_on_device, nvme_queue_pair.Submission_queue_tail);//Based on NVMe protocol definition, the updated tail pointer should be informed to the device
 			}
+			log_sq_file << Simulator->Time() << "  " << io_queue_id-1 << "  " << nvme_software_request_queue.size() << "  " << waiting_requests.size() << "  " << int(request->Type) << '\n';
 			break;
 		case HostInterface_Types::SATA:
 			request->Source_flow_id = flow_id;
