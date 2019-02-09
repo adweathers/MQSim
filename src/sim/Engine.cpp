@@ -81,6 +81,7 @@ namespace MQSimEngine
 			if (_EventList->Count == 0 || stop)
 				break;
 
+			DEBUG(" ")
 			EventTreeNode* minNode = _EventList->Get_min_node();
 			ev = minNode->FirstSimEvent;
 
@@ -88,8 +89,11 @@ namespace MQSimEngine
 
 			while (ev != NULL)
 			{
-				if(!ev->Ignore)
+				if(!ev->Ignore) {
+					DEBUG("ExecuteEvent  " << ev->Fire_time << " "
+						<< ev->Target_sim_object << " " << ev->Target_sim_object->ID())
 					ev->Target_sim_object->Execute_simulator_event(ev);
+				}
 				Sim_Event* consumed_event = ev;
 				ev = ev->Next_event;
 				delete consumed_event;
@@ -116,7 +120,7 @@ namespace MQSimEngine
 	Sim_Event* Engine::Register_sim_event(sim_time_type fireTime, Sim_Object* targetObject, void* parameters, int type)
 	{
 		Sim_Event* ev = new Sim_Event(fireTime, targetObject, parameters, type);
-		DEBUG("RegisterEvent " << fireTime << " " << targetObject)
+		DEBUG("RegisterEvent " << fireTime << " " << targetObject << " " << targetObject->ID())
 		_EventList->Insert_sim_event(ev);
 		return ev;
 	}
