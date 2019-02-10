@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "../sim/Sim_Defs.h"
-#include "NVM_Transaction.h"
+#include "NVM_Transaction_Flash.h"
 #include "../utils/XMLWriter.h"
 
 namespace SSD_Components
@@ -22,8 +22,11 @@ namespace SSD_Components
 	{
 	public:
 		Queue_Probe();
-		void EnqueueRequest(NVM_Transaction* transaction);
-		void DequeueRequest(NVM_Transaction* transaction);
+		~Queue_Probe() {
+			log_dq_file.close();
+		}
+		void EnqueueRequest(NVM_Transaction_Flash* transaction);
+		void DequeueRequest(NVM_Transaction_Flash* transaction);
 		void ResetEpochStatistics();
 		void Snapshot(std::string id, Utils::XmlWriter& writer);
 		unsigned long NRequests();
@@ -39,6 +42,7 @@ namespace SSD_Components
 		sim_time_type AvgWaitingTimeEpoch();
 		sim_time_type TotalWaitingTime();
 	private:
+		static std::ofstream log_dq_file;
 		unsigned int count = 0;
 		unsigned long nRequests = 0;
 		unsigned long nDepartures = 0;

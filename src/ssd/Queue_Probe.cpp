@@ -1,6 +1,7 @@
 #include <cmath>
 #include "Queue_Probe.h"
 #include "../sim/Engine.h"
+#include "../exec/Device_Parameter_Set.h"
 
 namespace SSD_Components
 {
@@ -9,13 +10,18 @@ namespace SSD_Components
 		this->nEnterances = 0;
 		this->totalTime = 0;
 	}
+
+	std::ofstream Queue_Probe::log_dq_file;
+
 	Queue_Probe::Queue_Probe()
 	{
 		states.push_back(StateStatistics());
 		statesEpoch.push_back(StateStatistics());
+		if (!log_dq_file.is_open())
+			log_dq_file.open("dq_count.log", std::ofstream::out);
 	}
 
-	void Queue_Probe::EnqueueRequest(NVM_Transaction* transaction)
+	void Queue_Probe::EnqueueRequest(NVM_Transaction_Flash* transaction)
 	{
 		if (transaction == NULL)
 			PRINT_ERROR("Inserting a null object to queue!")
@@ -24,9 +30,12 @@ namespace SSD_Components
 		nRequests++;
 		nRequestsEpoch++;
 		setCount(count + 1);
+		log_dq_file << Simulator->Time() << "  " << transaction->Stream_id << "  " 
+			<< transaction->Address.ChannelID * Device_Parameter_Set::Chip_No_Per_Channel + transaction->Address.ChipID << "  "
+			<< count << "  " << int(transaction->Type) << "  " << int(transaction->Source) << '\n';
 	}
 
-	void Queue_Probe::DequeueRequest(NVM_Transaction* transaction)
+	void Queue_Probe::DequeueRequest(NVM_Transaction_Flash* transaction)
 	{
 		nDepartures++;
 		nDeparturesEpoch++;
@@ -41,6 +50,9 @@ namespace SSD_Components
 			maxWaitingTime = tc;
 		totalWaitingTimeEpoch += tc;
 		setCount(count - 1);
+		log_dq_file << Simulator->Time() << "  " << transaction->Stream_id << "  "
+			<< transaction->Address.ChannelID * Device_Parameter_Set::Chip_No_Per_Channel + transaction->Address.ChipID << "  "
+			<< count << "  " << int(transaction->Type) << "  " << int(transaction->Source) << '\n';
 	}
 	void Queue_Probe::setCount(int val)
 	{
