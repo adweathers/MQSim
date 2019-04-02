@@ -430,6 +430,7 @@ namespace SSD_Components
 					planeVector |= 1 << (*it)->Address.PlaneID;
 					transaction_dispatch_slots.push_back(*it);
 					source_queue->remove(it++);
+					continue;
 				}
 				it++;
 			}
