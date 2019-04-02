@@ -117,10 +117,10 @@ namespace MQSimEngine
 		return _sim_time;
 	}
 
-	Sim_Event* Engine::Register_sim_event(sim_time_type fireTime, Sim_Object* targetObject, void* parameters, int type)
+	Sim_Event* Engine::Register_sim_event(sim_time_type fireTime, Sim_Object* targetObject, void* parameters, int type, const char* callingfn)
 	{
 		Sim_Event* ev = new Sim_Event(fireTime, targetObject, parameters, type);
-		DEBUG("RegisterEvent " << fireTime << " " << targetObject << " " << targetObject->ID())
+		DEBUG("RegisterEvent " << fireTime << " " << targetObject << " " << targetObject->ID() << " from " << callingfn << " at " << _sim_time)
 		_EventList->Insert_sim_event(ev);
 		return ev;
 	}

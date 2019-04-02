@@ -80,7 +80,7 @@ namespace Host_Components
 				delete cqe;
 
 				if(consume_requests.size() > 0)
-					Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::CONSUME_IO_REQUEST));
+					Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::CONSUME_IO_REQUEST), __FUNCTION__);
 			break;
 		}
 		case HBA_Sim_Events::SUBMIT_IO_REQUEST:
@@ -106,7 +106,7 @@ namespace Host_Components
 			}
 
 			if (host_requests.size() > 0)
-				Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::SUBMIT_IO_REQUEST));
+				Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::SUBMIT_IO_REQUEST), __FUNCTION__);
 
 			break;
 		}
@@ -117,13 +117,13 @@ namespace Host_Components
 	{
 		host_requests.push(request);
 		if (host_requests.size() == 1)
-			Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::SUBMIT_IO_REQUEST));
+			Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::SUBMIT_IO_REQUEST), __FUNCTION__);
 	}
 	void SATA_HBA::SATA_consume_io_request(Completion_Queue_Entry* cqe)
 	{
 		consume_requests.push(cqe);
 		if (consume_requests.size() == 1)
-			Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::CONSUME_IO_REQUEST));
+			Simulator->Register_sim_event(Simulator->Time() + hba_processing_delay, this, NULL, static_cast<int>(HBA_Sim_Events::CONSUME_IO_REQUEST), __FUNCTION__);
 	}
 	Submission_Queue_Entry* SATA_HBA::Read_ncq_entry(uint64_t address)
 	{

@@ -554,7 +554,7 @@ namespace SSD_Components
 		{
 			Simulator->Register_sim_event(Simulator->Time() + estimate_dram_access_time(request_info->Size_in_bytes, dram_row_size,
 				dram_busrt_size, dram_burst_transfer_time_ddr, dram_tRCD, dram_tCL, dram_tRP),
-				this, request_info, static_cast<int>(request_info->next_event_type));
+				this, request_info, static_cast<int>(request_info->next_event_type), __FUNCTION__);
 			memory_channel_is_busy = true;
 			dram_execution_list_turn = request_info->Stream_id;
 		}
@@ -591,7 +591,7 @@ namespace SSD_Components
 				dram_execution_queue[0].pop();
 				Simulator->Register_sim_event(Simulator->Time() + estimate_dram_access_time(transfer_info->Size_in_bytes, dram_row_size, dram_busrt_size,
 					dram_burst_transfer_time_ddr, dram_tRCD, dram_tCL, dram_tRP),
-					this, transfer_info, static_cast<int>(transfer_info->next_event_type));
+					this, transfer_info, static_cast<int>(transfer_info->next_event_type), __FUNCTION__);
 				memory_channel_is_busy = true;
 			}
 		}
@@ -607,7 +607,7 @@ namespace SSD_Components
 					dram_execution_queue[dram_execution_list_turn].pop();
 					Simulator->Register_sim_event(Simulator->Time() + estimate_dram_access_time(transfer_info->Size_in_bytes, dram_row_size, dram_busrt_size,
 						dram_burst_transfer_time_ddr, dram_tRCD, dram_tCL, dram_tRP),
-						this, transfer_info, static_cast<int>(transfer_info->next_event_type));
+						this, transfer_info, static_cast<int>(transfer_info->next_event_type), __FUNCTION__);
 					memory_channel_is_busy = true;
 					break;
 				}

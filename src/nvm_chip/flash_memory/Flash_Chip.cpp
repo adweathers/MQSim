@@ -106,7 +106,7 @@ namespace NVM
 
 			targetDie->Expected_finish_time = Simulator->Time() + Get_command_execution_latency(command->CommandCode, command->Address[0].PageID);
 			targetDie->CommandFinishEvent = Simulator->Register_sim_event(targetDie->Expected_finish_time,
-				this, command, static_cast<int>(Chip_Sim_Event_Type::COMMAND_FINISHED));
+				this, command, static_cast<int>(Chip_Sim_Event_Type::COMMAND_FINISHED), __FUNCTION__);
 			targetDie->CurrentCMD = command;
 			targetDie->Status = DieStatus::BUSY;
 			idleDieNo--;
@@ -240,7 +240,7 @@ namespace NVM
 
 			targetDie->Expected_finish_time = Simulator->Time() + targetDie->RemainingSuspendedExecTime;
 			targetDie->CommandFinishEvent = Simulator->Register_sim_event(targetDie->Expected_finish_time,
-				this, targetDie->CurrentCMD, static_cast<int>(Chip_Sim_Event_Type::COMMAND_FINISHED));
+				this, targetDie->CurrentCMD, static_cast<int>(Chip_Sim_Event_Type::COMMAND_FINISHED), __FUNCTION__);
 			if (targetDie->Expected_finish_time > this->expectedFinishTime)
 				this->expectedFinishTime = targetDie->Expected_finish_time;
 

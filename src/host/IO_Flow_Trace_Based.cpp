@@ -103,7 +103,7 @@ namespace Host_Components
 		std::getline(trace_file, trace_line);
 		Utils::Helper_Functions::Remove_cr(trace_line);
 		Utils::Helper_Functions::Tokenize(trace_line, ASCIILineDelimiter, current_trace_line);
-		Simulator->Register_sim_event(std::strtoll(current_trace_line[ASCIITraceTimeColumn].c_str(), &pEnd, 10), this);
+		Simulator->Register_sim_event(std::strtoll(current_trace_line[ASCIITraceTimeColumn].c_str(), &pEnd, 10), this, 0, 0, __FUNCTION__);
 	}
 
 	void IO_Flow_Trace_Based::Validate_simulation_config()
@@ -138,7 +138,7 @@ namespace Host_Components
 				PRINT_MESSAGE("* Replay round "<< replay_counter << "of "<< total_replay_no << " started  for" << ID())
 			}
 			char* pEnd;
-			Simulator->Register_sim_event(time_offset + std::strtoll(current_trace_line[ASCIITraceTimeColumn].c_str(), &pEnd, 10), this);
+			Simulator->Register_sim_event(time_offset + std::strtoll(current_trace_line[ASCIITraceTimeColumn].c_str(), &pEnd, 10), this, 0, 0, __FUNCTION__);
 		}
 	}
 

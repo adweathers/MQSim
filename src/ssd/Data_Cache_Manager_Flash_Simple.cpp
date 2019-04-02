@@ -301,7 +301,7 @@ namespace SSD_Components
 		{
 			Simulator->Register_sim_event(Simulator->Time() + estimate_dram_access_time(request_info->Size_in_bytes, dram_row_size,
 				dram_busrt_size, dram_burst_transfer_time_ddr, dram_tRCD, dram_tCL, dram_tRP),
-				this, request_info, static_cast<int>(request_info->next_event_type));
+				this, request_info, static_cast<int>(request_info->next_event_type), __FUNCTION__);
 		}
 	}
 
@@ -332,7 +332,7 @@ namespace SSD_Components
 			Memory_Transfer_Info* new_transfer_info = dram_execution_queue[transfer_inf->Stream_id].front();
 			Simulator->Register_sim_event(Simulator->Time() + estimate_dram_access_time(new_transfer_info->Size_in_bytes, dram_row_size, dram_busrt_size,
 				dram_burst_transfer_time_ddr, dram_tRCD, dram_tCL, dram_tRP),
-				this, new_transfer_info, static_cast<int>(new_transfer_info->next_event_type));
+				this, new_transfer_info, static_cast<int>(new_transfer_info->next_event_type), __FUNCTION__);
 		}
 		delete transfer_inf;
 	}

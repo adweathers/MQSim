@@ -190,9 +190,9 @@ namespace Host_Components
 				streaming_next_address -= streaming_next_address % alignment_value;
 		}
 		if (generator_type == Utils::Request_Generator_Type::BANDWIDTH)
-			Simulator->Register_sim_event((sim_time_type)random_time_interval_generator->Exponential((double)Average_inter_arrival_time_nano_sec), this, 0, 0);
+			Simulator->Register_sim_event((sim_time_type)random_time_interval_generator->Exponential((double)Average_inter_arrival_time_nano_sec), this, 0, 0, __FUNCTION__);
 		else
-			Simulator->Register_sim_event((sim_time_type)1, this, 0, 0);
+			Simulator->Register_sim_event((sim_time_type)1, this, 0, 0, __FUNCTION__);
 	}
 
 	void IO_Flow_Synthetic::Validate_simulation_config() {}
@@ -205,7 +205,7 @@ namespace Host_Components
 			if (req != NULL)
 			{
 				Submit_io_request(req);
-				Simulator->Register_sim_event(Simulator->Time() + (sim_time_type)random_time_interval_generator->Exponential((double)Average_inter_arrival_time_nano_sec), this, 0, 0);
+				Simulator->Register_sim_event(Simulator->Time() + (sim_time_type)random_time_interval_generator->Exponential((double)Average_inter_arrival_time_nano_sec), this, 0, 0, __FUNCTION__);
 			}
 		}
 		else for (unsigned int i = 0; i < average_number_of_enqueued_requests; i++)
