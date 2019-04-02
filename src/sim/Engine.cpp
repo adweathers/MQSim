@@ -1,6 +1,9 @@
 #include <stdexcept>
 #include "Engine.h"
 #include "../utils/Logical_Address_Partitioning_Unit.h"
+#include <climits>
+
+std::ofstream cdebug;
 
 namespace MQSimEngine
 {
@@ -52,6 +55,7 @@ namespace MQSimEngine
 	void Engine::Start_simulation()
 	{
 		started = true;
+		DEBUG_OPEN
 
 		for(std::unordered_map<sim_object_id_type, Sim_Object*>::iterator obj = _ObjectList.begin();
 			obj != _ObjectList.end();
@@ -78,8 +82,10 @@ namespace MQSimEngine
 		Sim_Event* ev = NULL;
 		while (true)
 		{
-			if (_EventList->Count == 0 || stop)
+			if (_EventList->Count == 0 || stop) {
+				std::cout << "*** event count = " << _EventList->Count << ", stop = " << stop << '\n';
 				break;
+			}
 
 			DEBUG(" ")
 			EventTreeNode* minNode = _EventList->Get_min_node();
@@ -100,6 +106,7 @@ namespace MQSimEngine
 			}
 			_EventList->Remove(minNode);
 		}
+		DEBUG_CLOSE
 	}
 
 	void Engine::Stop_simulation()
