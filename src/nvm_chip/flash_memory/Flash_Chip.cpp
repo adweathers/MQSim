@@ -284,7 +284,7 @@ namespace NVM
 			xmlwriter.Write_attribute_string_inline(attr, val);
 
 			attr = "Fraction_of_Time_Idle";
-			val = std::to_string((Simulator->Time() - STAT_totalOverlappedXferExecTime - STAT_totalXferTime) / double(Simulator->Time()));
+			val = std::to_string((Simulator->Time() + STAT_totalOverlappedXferExecTime - STAT_totalXferTime - STAT_totalExecTime) / double(Simulator->Time()));
 			xmlwriter.Write_attribute_string_inline(attr, val);
 		
 			xmlwriter.Write_end_element_tag();
