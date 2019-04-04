@@ -44,6 +44,9 @@ namespace SSD_Components
 			unsigned int block_no_per_plane, unsigned int page_no_per_block, unsigned int sector_no_per_page,
 			bool use_copyback, double rho, unsigned int max_ongoing_gc_reqs_per_plane,
 			bool dynamic_wearleveling_enabled, bool static_wearleveling_enabled, unsigned int static_wearleveling_threshold, int seed);
+		~GC_and_WL_Unit_Base() {
+			log_bm_file.close();
+		}
 		void Setup_triggers();
 		void Start_simulation();
 		void Validate_simulation_config();
@@ -58,6 +61,8 @@ namespace SSD_Components
 		bool Use_static_wearleveling();
 		bool Stop_servicing_writes(const NVM::FlashMemory::Physical_Page_Address& plane_address);
 	protected:
+		static std::ofstream log_bm_file;
+		static int log_bm_enable;
 		GC_Block_Selection_Policy_Type block_selection_policy;
 		static GC_and_WL_Unit_Base * _my_instance;
 		Address_Mapping_Unit_Base* address_mapping_unit;

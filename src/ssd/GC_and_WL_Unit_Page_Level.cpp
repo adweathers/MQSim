@@ -40,10 +40,13 @@ namespace SSD_Components
 
 	void GC_and_WL_Unit_Page_Level::Check_gc_required(const unsigned int free_block_pool_size, const NVM::FlashMemory::Physical_Page_Address& plane_address)
 	{
+		PlaneBookKeepingType* pbke = block_manager->Get_plane_bookkeeping_entry(plane_address);
+		if (log_bm_enable)
+			log_bm_file << Simulator->Time() << "  " << pbke->id << "  " << free_block_pool_size << "  " << block_pool_gc_threshold << '\n';
+
 		if (free_block_pool_size < block_pool_gc_threshold)
 		{
 			flash_block_ID_type gc_candidate_block_id = block_manager->Get_coldest_block_id(plane_address);
-			PlaneBookKeepingType* pbke = block_manager->Get_plane_bookkeeping_entry(plane_address);
 
 			if (pbke->Ongoing_erase_operations.size() >= max_ongoing_gc_reqs_per_plane)
 				return;

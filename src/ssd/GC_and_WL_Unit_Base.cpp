@@ -3,6 +3,8 @@
 namespace SSD_Components
 {
 	GC_and_WL_Unit_Base* GC_and_WL_Unit_Base::_my_instance;
+	std::ofstream GC_and_WL_Unit_Base::log_bm_file;
+	int GC_and_WL_Unit_Base::log_bm_enable=1;
 	
 	GC_and_WL_Unit_Base::GC_and_WL_Unit_Base(const sim_object_id_type& id,
 		Address_Mapping_Unit_Base* address_mapping_unit, Flash_Block_Manager_Base* block_manager, TSU_Base* tsu, NVM_PHY_ONFI* flash_controller,
@@ -28,6 +30,9 @@ namespace SSD_Components
 		random_pp_threshold = (unsigned int)(rho * pages_no_per_block);
 		if (block_pool_gc_threshold < max_ongoing_gc_reqs_per_plane)
 			block_pool_gc_threshold = max_ongoing_gc_reqs_per_plane;
+
+		if (log_bm_enable && !log_bm_file.is_open())
+			log_bm_file.open("bm_count.log", std::ofstream::out);
 	}
 
 	void GC_and_WL_Unit_Base::Setup_triggers()
