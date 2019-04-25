@@ -409,7 +409,7 @@ LPA_type SSD_Device::Convert_host_logical_address_to_device_address(LHA_type lha
 	return my_instance->Firmware->Convert_host_logical_address_to_device_address(lha);
 }
 
-page_status_type SSD_Device::Find_NVM_subunit_access_bitmap(LHA_type lha)
+page_status_type SSD_Device::Find_NVM_subunit_access_bitmap(LHA_type lha, int size)
 {
-	return my_instance->Firmware->Find_NVM_subunit_access_bitmap(lha);
+	return my_instance->Firmware->Find_NVM_subunit_access_bitmap(lha,size);
 }

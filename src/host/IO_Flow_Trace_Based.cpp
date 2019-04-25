@@ -142,8 +142,8 @@ namespace Host_Components
 		}
 	}
 
-	void IO_Flow_Trace_Based::Get_statistics(Utils::Workload_Statistics& stats, LPA_type(*Convert_host_logical_address_to_device_address)(LHA_type lha),
-		page_status_type(*Find_NVM_subunit_access_bitmap)(LHA_type lha))
+	void IO_Flow_Trace_Based::Get_statistics(Utils::Workload_Statistics& stats, LPA_type(*Convert_host_logical_address_to_device_address)(LHA_type),
+		page_status_type(*Find_NVM_subunit_access_bitmap)(LHA_type, int))
 	{
 		stats.Type = Utils::Workload_Type::TRACE_BASED;
 		stats.Stream_id = io_queue_id - 1; //In MQSim, there is a simple relation between stream id and the io_queue_id of NVMe
@@ -203,7 +203,7 @@ namespace Host_Components
 			while (start_LBA <= end_LBA)
 			{
 				LPA_type device_address = Convert_host_logical_address_to_device_address(start_LBA);
-				page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(start_LBA);
+				page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(start_LBA, LBA_count);
 				if (line_splitted[ASCIITraceTypeColumn].compare(ASCIITraceWriteCode) == 0)
 				{
 					if (stats.Write_address_access_pattern.find(device_address) == stats.Write_address_access_pattern.end())

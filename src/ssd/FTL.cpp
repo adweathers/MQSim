@@ -295,7 +295,7 @@ namespace SSD_Components
 							transaction_size = size - hanled_sectors_count;
 						}
 						LPA_type lpa = Convert_host_logical_address_to_device_address(lsa);
-						page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(lsa);
+						page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(lsa,size);
 
 						lsa = lsa + transaction_size;
 						hanled_sectors_count += transaction_size;
@@ -422,7 +422,7 @@ namespace SSD_Components
 						}
 
 						LPA_type lpa = Convert_host_logical_address_to_device_address(internal_lsa);
-						page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(internal_lsa);
+						page_status_type access_status_bitmap = Find_NVM_subunit_access_bitmap(internal_lsa,size);
 
 						if (lpa_set_for_preconditioning.find(lpa) != lpa_set_for_preconditioning.end())
 							lpa_set_for_preconditioning[lpa] = access_status_bitmap;
@@ -912,9 +912,9 @@ namespace SSD_Components
 		return lha / page_size_in_sectors;
 	}
 
-	page_status_type FTL::Find_NVM_subunit_access_bitmap(LHA_type lha)
+	page_status_type FTL::Find_NVM_subunit_access_bitmap(LHA_type lha, int size=1)
 	{
-		return ((page_status_type)~(0xffffffffffffffff << (int)1)) << (int)(lha % page_size_in_sectors);
+		return ((page_status_type)~(0xffffffffffffffff << size)) << (int)(lha % page_size_in_sectors);
 	}
 
 }
