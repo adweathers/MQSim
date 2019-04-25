@@ -97,7 +97,7 @@ namespace MQSimEngine
 			{
 				if(!ev->Ignore) {
 					DEBUG("ExecuteEvent  " << ev->Fire_time << " "
-						<< ev->Target_sim_object << " " << ev->Target_sim_object->ID())
+						<< ev->Target_sim_object << " " << ev->Target_sim_object->ID() << " from " << ev->callingfn)
 					ev->Target_sim_object->Execute_simulator_event(ev);
 				}
 				Sim_Event* consumed_event = ev;
@@ -127,6 +127,7 @@ namespace MQSimEngine
 	Sim_Event* Engine::Register_sim_event(sim_time_type fireTime, Sim_Object* targetObject, void* parameters, int type, const char* callingfn)
 	{
 		Sim_Event* ev = new Sim_Event(fireTime, targetObject, parameters, type);
+		ev->callingfn = callingfn;
 		DEBUG("RegisterEvent " << fireTime << " " << targetObject << " " << targetObject->ID() << " from " << callingfn << " at " << _sim_time)
 		_EventList->Insert_sim_event(ev);
 		return ev;
