@@ -26,11 +26,11 @@ typedef std::string sim_object_id_type;
 							exit(1);\
 						 }
 #define PRINT_MESSAGE(M) std::cout << M << std::endl;
-#define DEBUG2(M) //std::cout<<M<<std::endl;
 
-#define DEBUG_ENABLE 2	// 0 - disabled, 1 - screen, 2 - log file
-#define DEBUG_TSTART (0ull)
-#define DEBUG_TSTOP (UINT64_MAX)
+#define DEBUG_ENABLE 0	// indicates if enabled and where to go if so (0 - disabled, 1 - screen, 2 - log file)
+#define DEBUG_LEVEL 1	// indicates how much info to dump
+#define DEBUG_TSTART (0ull)			// time to start dumping the log
+#define DEBUG_TSTOP (UINT64_MAX)	// time to stop dumping the log
 
 #if (DEBUG_ENABLE==0)
 #  define DEBUG(M)
@@ -45,6 +45,13 @@ typedef std::string sim_object_id_type;
 #  define DEBUG_OPEN cdebug.open("debug.log");
 #  define DEBUG_CLOSE cdebug.close();
 #endif
+
+// define additional levels
+#  if (DEBUG_LEVEL>1)
+#    define DEBUG2(M) DEBUG(M)
+#  else
+#    define DEBUG2(M)
+#  endif
 
 
 #define SIM_TIME_TO_MICROSECONDS_COEFF 1000
